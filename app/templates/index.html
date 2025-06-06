@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飯店價格追蹤器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>飯店價格追蹤器</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('main.index') }}">首頁</a></li>
+            <!-- <li><a href="#">關於</a></li> -->
+        </ul>
+    </nav>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2>新增搜尋請求</h2>
+        <!-- <form method="POST" action="{{ url_for('main.index') }}">
+            {{ form.csrf_token }} 
+            <div>
+                {{ form.location.label }}<br>
+                {{ form.location(size=50) }}
+                {% if form.location.errors %}
+                    <ul class="errors">{% for error in form.location.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <div>
+                {{ form.check_in_date.label }}<br>
+                {{ form.check_in_date }}
+                {% if form.check_in_date.errors %}
+                    <ul class="errors">{% for error in form.check_in_date.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <div>
+                {{ form.check_out_date.label }}<br>
+                {{ form.check_out_date }}
+                {% if form.check_out_date.errors %}
+                    <ul class="errors">{% for error in form.check_out_date.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <div>
+                {{ form.submit() }}
+            </div>
+        </form> -->
+        <p>搜尋表單功能將在 `app/forms.py` 和 `app/routes.py` 中啟用後顯示。</p>
+        <p>目前請手動透過資料庫操作新增搜尋請求，或等待後續開發。</p>
+
+        <h2>目前追蹤的請求</h2>
+        {% if searches %}
+            <div class="search-requests-list">
+                <ul>
+                    {% for search in searches %}
+                        <li>
+                            <div>
+                                <a href="{{ url_for('main.search_details', search_id=search.id) }}">
+                                    <strong>{{ search.location }}</strong> ({{ search.check_in_date.strftime('%Y-%m-%d') }} - {{ search.check_out_date.strftime('%Y-%m-%d') }})
+                                </a>
+                                <br>
+                                <small>建立於: {{ search.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</small><br>
+                                <small>上次爬取: {{ search.last_crawled_at.strftime('%Y-%m-%d %H:%M') if search.last_crawled_at else '尚未爬取' }} UTC</small><br>
+                                <small>狀態: {% if search.is_tracking %}追蹤中{% else %}已停止追蹤{% endif %}</small>
+                            </div>
+                            <div class="actions">
+                                <form method="POST" action="{{ url_for('main.toggle_tracking', search_id=search.id) }}" style="display:inline;">
+                                    <input type="submit" value="{% if search.is_tracking %}停止追蹤{% else %}開始追蹤{% endif %}">
+                                </form>
+                                <form method="POST" action="{{ url_for('main.delete_search', search_id=search.id) }}" style="display:inline;" onsubmit="return confirm('確定要刪除這個搜尋請求嗎？相關的價格資料也會一併刪除。');">
+                                    <input type="submit" value="刪除">
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p>目前沒有正在追蹤的飯店搜尋請求。</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ "now"|date("%Y") }} 飯店價格掃描器 - 由 Cascade AI 協助建置</p>
+    </footer>
+</body>
+</html>

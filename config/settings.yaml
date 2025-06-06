@@ -1,0 +1,26 @@
+# config/settings.yaml
+# 訂房網站設定
+target_sites:
+  - name: Agoda
+    base_url: "https://www.agoda.com"
+    enabled: true
+  - name: Hotels.com
+    base_url: "https://www.hotels.com" # 實際 URL 可能因地區而異，請確認
+    enabled: true
+  - name: Booking.com
+    base_url: "https://www.booking.com"
+    enabled: true
+  # 您可以在此處添加更多網站
+  # - name: Expedia
+  #   base_url: "https://www.expedia.com"
+  #   enabled: false
+
+# 爬蟲設定
+crawl_interval_hours: 2 # 爬取間隔時間 (小時)
+
+# Selenium WebDriver 設定
+webdriver:
+  browser: "chrome" # 可選 "firefox"
+  headless: true    # true 為無痕模式 (背景執行), false 為顯示瀏覽器
+  # 如果您的 chromedriver 或 geckodriver 不在系統 PATH 中，可以在此處指定其絕對路徑
+  # driver_executable_path: "/path/to/your/chromedriver_or_geckodriver"
