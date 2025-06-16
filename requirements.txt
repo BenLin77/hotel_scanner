@@ -13,3 +13,12 @@ APScheduler==3.10.4
 PyYAML==6.0.1
 webdriver-manager==4.0.1
 lxml==4.9.3
+# 額外的爬蟲相關套件
+undetected-chromedriver==3.5.4  # 避免被反爬蟲檢測
+fake-useragent==1.4.0           # 隨機 User-Agent
+requests-html==0.10.0           # 輕量級爬蟲
+tenacity==8.2.3                 # 重試機制
+python-dotenv==1.0.0            # 環境變數管理
+redis==4.6.0                    # 快取和去重
+aiohttp==3.9.1                  # 異步HTTP請求
+asyncio-pool==0.6.0             # 異步連接池

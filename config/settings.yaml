@@ -4,23 +4,107 @@ target_sites:
   - name: Agoda
     base_url: "https://www.agoda.com"
     enabled: true
+    # 特定網站的配置
+    search_delay: [3, 8]  # 搜尋間隔範圍（秒）
+    page_timeout: 30      # 頁面載入超時
   - name: Hotels.com
-    base_url: "https://www.hotels.com" # 實際 URL 可能因地區而異，請確認
+    base_url: "https://www.hotels.com"
     enabled: true
+    search_delay: [2, 6]
+    page_timeout: 30
   - name: Booking.com
     base_url: "https://www.booking.com"
     enabled: true
+    search_delay: [4, 10]
+    page_timeout: 30
   # 您可以在此處添加更多網站
   # - name: Expedia
   #   base_url: "https://www.expedia.com"
   #   enabled: false
 
-# 爬蟲設定
-crawl_interval_hours: 2 # 爬取間隔時間 (小時)
+# 爬蟲基本設定
+crawl_interval_hours: 2  # 爬取間隔時間（小時）
+max_concurrent_requests: 3  # 最大並發請求數
+request_timeout: 60     # 請求超時時間
 
 # Selenium WebDriver 設定
 webdriver:
-  browser: "chrome" # 可選 "firefox"
-  headless: true    # true 為無痕模式 (背景執行), false 為顯示瀏覽器
-  # 如果您的 chromedriver 或 geckodriver 不在系統 PATH 中，可以在此處指定其絕對路徑
-  # driver_executable_path: "/path/to/your/chromedriver_or_geckodriver"
+  browser: "chrome"       # 可選 "firefox"
+  headless: true         # true 為無頭模式
+  use_undetected: true   # 是否使用 undetected-chromedriver
+  window_size: [1920, 1080]
+  page_load_timeout: 60
+  implicit_wait: 10
+  
+# 反檢測設定
+anti_detection:
+  random_user_agent: true
+  simulate_human_behavior: true
+  random_delays: true
+  viewport_randomization: false
+  
+# 重試機制設定
+retry_settings:
+  max_attempts: 3        # 最大重試次數
+  exponential_backoff:   # 指數退避設定
+    multiplier: 1
+    min_wait: 2
+    max_wait: 10
+  retry_on_errors:       # 哪些錯誤需要重試
+    - "TimeoutException"
+    - "WebDriverException"
+    - "ConnectionError"
+
+# 代理設定（可選）
+proxy_settings:
+  enabled: false         # 是否啟用代理
+  rotation: true         # 是否輪換代理
+  proxies:              # 代理列表
+    # - "http://proxy1:8080"
+    # - "http://proxy2:8080"
+    # - "socks5://proxy3:1080"
+  proxy_timeout: 30
+
+# 日誌設定
+logging:
+  level: "INFO"          # DEBUG, INFO, WARNING, ERROR
+  file_path: "logs/scraper.log"
+  max_file_size: "10MB"
+  backup_count: 5
+
+# 資料庫優化設定
+database:
+  batch_size: 100        # 批次插入大小
+  connection_pool_size: 10
+  enable_query_optimization: true
+
+# 快取設定（Redis）
+cache:
+  enabled: false         # 是否啟用 Redis 快取
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: null
+  ttl: 3600             # 快取存活時間（秒）
+
+# 通知設定
+notifications:
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    username: ""
+    password: ""
+    recipients: []
+  
+  discord:
+    enabled: false
+    webhook_url: ""
+    
+# 效能監控
+monitoring:
+  enabled: true
+  metrics_interval: 300  # 指標收集間隔（秒）
+  alert_thresholds:
+    error_rate: 0.1      # 錯誤率閾值
+    response_time: 30    # 響應時間閾值（秒）
